@@ -93,12 +93,8 @@ const VenueSection = () => {
                     {venueTitle}
                   </h3>
 
-                  <p className="venue-address-display text-ivory mb-2 small leading-normal">
+                  <p className="venue-address-display text-ivory mb-3 small leading-normal">
                     Dasanayakanahalli, Hennur-Bagalur Road, Bangalore.
-                  </p>
-
-                  <p className="venue-auspices text-gold-soft small fst-italic mb-3">
-                    Under the auspices of <strong className="text-gold-champagne not-italic">Cornerstone Gospel Assembly</strong>
                   </p>
 
                   {/* Compact Schedule Chips */}

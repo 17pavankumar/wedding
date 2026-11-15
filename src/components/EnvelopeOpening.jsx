@@ -1,158 +1,290 @@
-import React, { useState } from 'react';
-import { Sparkles, ChevronRight } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Sparkles } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
-const EnvelopeOpening = ({ onOpenComplete, onStartAudio }) => {
-  const [animationStage, setAnimationStage] = useState('initial'); // 'initial' | 'opening' | 'dissolving' | 'completed'
+const EnvelopeOpening = ({ onOpenComplete }) => {
+  // Stages: 'initial' | 'unfolding' | 'emerging' | 'blooming' | 'completed'
+  const [stage, setStage] = useState('initial');
+  const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
+  const containerRef = useRef(null);
 
-  const handleEnvelopeClick = () => {
-    if (animationStage !== 'initial') return;
+  // Lock body scroll while envelope is active so background never scrolls
+  useEffect(() => {
+    if (stage !== 'completed') {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [stage]);
 
-    // Start background audio immediately upon guest interaction
-    if (onStartAudio) onStartAudio();
+  // Subtle physical 3D mouse parallax on desktop (only while initial)
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (stage !== 'initial' || window.innerWidth < 768) return;
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX - innerWidth / 2) / (innerWidth / 2);
+      const y = (e.clientY - innerHeight / 2) / (innerHeight / 2);
+      setTilt({
+        rotateX: -y * 4,
+        rotateY: x * 4
+      });
+    };
 
-    // Sequence 1: Wax seal fades out, top flap folds upward in 3D
-    setAnimationStage('opening');
+    const handleMouseLeave = () => {
+      setTilt({ rotateX: 0, rotateY: 0 });
+    };
 
-    // Sequence 2: Warm light blooms, envelope gracefully cross-fades into the invitation
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseleave', handleMouseLeave);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [stage]);
+
+  const handleOpenEnvelope = (e) => {
+    if (e) e.stopPropagation();
+    if (stage !== 'initial') return;
+    setTilt({ rotateX: 0, rotateY: 0 });
+
+    // Step 0: Golden stardust confetti burst from wax seal
+    try {
+      confetti({
+        particleCount: 50,
+        spread: 80,
+        origin: { y: 0.5, x: 0.5 },
+        colors: ['#FFE5A3', '#D4AF62', '#FFFDF0', '#C5A04D', '#F3E5AB'],
+        ticks: 85,
+        gravity: 0.8,
+        scalar: 0.75,
+        shapes: ['circle'],
+        disableForReducedMotion: true
+      });
+    } catch (err) {
+      // Graceful fallback
+    }
+
+    // Step 1: Flap swings 180° open in 3D (0.0s -> 0.55s)
+    setStage('unfolding');
+
+    // Step 2: Card smoothly glides UP out of the envelope pocket (0.55s -> 1.9s)
     setTimeout(() => {
-      setAnimationStage('dissolving');
-    }, 1100);
+      setStage('emerging');
+    }, 550);
 
-    // Sequence 3: Complete transition smoothly without any sudden jump or unmounting pop
+    // Step 3: Luminous golden bloom transition (2.1s -> 2.65s)
     setTimeout(() => {
-      setAnimationStage('completed');
+      setStage('blooming');
+    }, 2100);
+
+    // Step 4: Seamless transition into website
+    setTimeout(() => {
+      setStage('completed');
       if (onOpenComplete) onOpenComplete();
-    }, 2200);
+    }, 2750);
   };
 
-  const handleSkip = (e) => {
-    e.stopPropagation();
-    if (onStartAudio) onStartAudio();
-    setAnimationStage('dissolving');
-    setTimeout(() => {
-      setAnimationStage('completed');
-      if (onOpenComplete) onOpenComplete();
-    }, 300);
-  };
-
-  if (animationStage === 'completed') {
+  if (stage === 'completed') {
     return null;
   }
 
+  const isOpened = stage !== 'initial';
+  const isCardEmerged = stage === 'emerging' || stage === 'blooming';
+
   return (
     <div
-      className={`envelope-screen-overlay stage-${animationStage}`}
-      onClick={handleEnvelopeClick}
+      className={`luxury-envelope-overlay stage-${stage}`}
+      onClick={handleOpenEnvelope}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleOpenEnvelope();
+        }
+      }}
       role="button"
       tabIndex={0}
-      aria-label="Tap to open luxury wedding invitation"
+      aria-label="Click to open luxury wedding invitation"
     >
-      {/* Skip to Invitation button */}
-      <button
-        onClick={handleSkip}
-        className="btn-skip-animation"
-        aria-label="Skip to invitation"
-      >
-        <span>Skip to Invitation</span>
-        <ChevronRight size={16} />
-      </button>
+      {/* Ambient Radial Golden Halo */}
+      <div className="envelope-ambient-halo"></div>
 
-      {/* Floating Sparkles & Light Shimmer around envelope */}
-      <div className="envelope-ambient-glow-circle"></div>
+      {/* Luminous Golden Bloom Screen for Seamless Crossfade */}
+      <div className={`golden-bloom-screen ${stage === 'blooming' ? 'bloom-active' : ''}`}></div>
 
-      <div className="envelope-outer-container">
-        {/* Header Invitation Text */}
-        <div className={`envelope-header text-center ${animationStage !== 'initial' ? 'fade-away' : ''}`}>
-          <div className="header-tagline-wrap">
-            <span className="header-monogram-text">K&amp;S</span>
-            <p className="invite-tagline mb-1">YOU ARE CORDIALLY INVITED</p>
-            <div className="golden-hairline"></div>
+      <div className="envelope-scene-wrapper" ref={containerRef}>
+        {/* Header Invitation Tagline */}
+        <div className={`envelope-hero-header text-center ${isOpened ? 'fade-away' : ''}`}>
+          <div className="hero-monogram-label">K &amp; S</div>
+          <p className="hero-invite-subtitle">YOU ARE CORDIALLY INVITED</p>
+          <div className="hero-gold-hairline">
+            <span className="diamond-bullet">✦</span>
           </div>
         </div>
 
-        {/* 3D Vertical Envelope Box (Matches Reference Video Ratio) */}
-        <div className={`envelope-portrait-card ${animationStage}`}>
-          {/* Internal Envelope Base / Lining */}
-          <div className="envelope-interior-lining">
-            {/* Radiant Golden Light Column that beams when flap opens */}
-            <div className={`golden-light-column ${animationStage !== 'initial' ? 'beam-active' : ''}`}></div>
+        {/* 3D Envelope Master Box */}
+        <div
+          className={`envelope-master-box ${isCardEmerged ? 'box-lowered' : ''}`}
+          style={{
+            transform: isCardEmerged
+              ? 'translateY(48px)'
+              : `perspective(1200px) rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg)`
+          }}
+        >
+          {/* Layer 1: Envelope Interior Back Plate */}
+          <div className="envelope-back-plate">
+            <div className="envelope-back-pattern"></div>
           </div>
 
-          {/* Left Flap with Embossed Gold Rose Damask */}
-          <div className="flap-left-polygon">
-            <img
-              src="/images/envelope_floral_left.svg"
-              alt="Gold Floral Embossing"
-              className="flap-floral-svg flap-floral-left"
-            />
-            <div className="flap-diagonal-edge flap-edge-left"></div>
-          </div>
+          {/* Layer 2: The Luxury Invitation Card (Slides UP Out of Pocket) */}
+          <div className={`envelope-sliding-card ${isCardEmerged ? 'card-emerged' : ''}`}>
+            <div className="sliding-card-gold-border">
+              {/* Corner accents */}
+              <div className="sliding-corner corner-tl"></div>
+              <div className="sliding-corner corner-tr"></div>
+              <div className="sliding-corner corner-bl"></div>
+              <div className="sliding-corner corner-br"></div>
 
-          {/* Right Flap with Embossed Gold Rose Damask */}
-          <div className="flap-right-polygon">
-            <img
-              src="/images/envelope_floral_right.svg"
-              alt="Gold Floral Embossing"
-              className="flap-floral-svg flap-floral-right"
-            />
-            <div className="flap-diagonal-edge flap-edge-right"></div>
-          </div>
-
-          {/* Bottom Flap */}
-          <div className="flap-bottom-polygon">
-            <div className="flap-bottom-edge flap-bottom-edge-left"></div>
-            <div className="flap-bottom-edge flap-bottom-edge-right"></div>
-            <div className="bottom-flourish-crest">
-              <svg viewBox="0 0 80 40" width="60" height="30" fill="none">
-                <path d="M10 35 Q 40 10 70 35" stroke="url(#goldLineGrad)" strokeWidth="1.2" />
-                <circle cx="40" cy="18" r="2.5" fill="#D4AF62" />
-                <defs>
-                  <linearGradient id="goldLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#4A1028" stopOpacity="0" />
-                    <stop offset="50%" stopColor="#D4AF62" />
-                    <stop offset="100%" stopColor="#4A1028" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-          </div>
-
-          {/* Top Flap (3D Flip Flap) */}
-          <div className={`flap-top-3d ${animationStage !== 'initial' ? 'flap-opened' : ''}`}>
-            <div className="flap-top-face flap-top-front">
-              <div className="flap-top-edge flap-top-edge-left"></div>
-              <div className="flap-top-edge flap-top-edge-right"></div>
-              <div className="top-flap-accent">
-                <svg viewBox="0 0 80 40" width="50" height="25" fill="none">
-                  <path d="M15 5 Q 40 30 65 5" stroke="#D4AF62" strokeWidth="1.2" opacity="0.8" />
-                  <circle cx="40" cy="22" r="2.5" fill="#D4AF62" />
-                </svg>
+              {/* Card Content */}
+              <div className="sliding-card-content text-center">
+                <div className="sliding-card-crest mx-auto">
+                  <img
+                    src="/images/ks_logo_circle.png"
+                    alt="Kevin &amp; Sahana Monogram Crest"
+                    className="sliding-crest-img"
+                  />
+                </div>
+                <p className="sliding-families-label">TOGETHER WITH THEIR FAMILIES</p>
+                <h2 className="sliding-names-script">Kevin &amp; Sahana</h2>
+                <div className="sliding-gold-divider">✦</div>
+                <p className="sliding-invite-label">INVITE YOU TO CELEBRATE THEIR WEDDING</p>
+                <div className="sliding-date-badge">SATURDAY • 12 DECEMBER 2026</div>
+                <p className="sliding-venue-label">EDEN FARMS • BANGALORE</p>
               </div>
             </div>
-            {/* Underside of top flap when flipped */}
-            <div className="flap-top-face flap-top-back"></div>
           </div>
 
-          {/* Official K&S Golden Wax Seal Centerpiece */}
-          <div className={`center-seal-wrapper ${animationStage !== 'initial' ? 'seal-break' : ''}`}>
-            <div className="official-wax-seal-container">
+          {/* Layer 3: Front Envelope Pocket (Left, Right & Bottom Folds + Vines) */}
+          <div className="envelope-pocket-front">
+            {/* SVG Pocket Geometry (Left, Right, Bottom Triangles & Bevels) */}
+            <svg viewBox="0 0 320 440" className="pocket-svg" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="pocketLeftGrad" x1="0%" y1="0%" x2="100%" y2="50%">
+                  <stop offset="0%" stopColor="#4A1028" />
+                  <stop offset="60%" stopColor="#35081C" />
+                  <stop offset="100%" stopColor="#220412" />
+                </linearGradient>
+                <linearGradient id="pocketRightGrad" x1="100%" y1="0%" x2="0%" y2="50%">
+                  <stop offset="0%" stopColor="#4A1028" />
+                  <stop offset="60%" stopColor="#35081C" />
+                  <stop offset="100%" stopColor="#220412" />
+                </linearGradient>
+                <linearGradient id="pocketBottomGrad" x1="50%" y1="100%" x2="50%" y2="0%">
+                  <stop offset="0%" stopColor="#55142E" />
+                  <stop offset="55%" stopColor="#3E0B20" />
+                  <stop offset="100%" stopColor="#2A0516" />
+                </linearGradient>
+                <linearGradient id="goldBevelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#FFFDF0" stopOpacity="0.9" />
+                  <stop offset="50%" stopColor="#D4AF62" stopOpacity="0.85" />
+                  <stop offset="100%" stopColor="#8A6B2D" stopOpacity="0.35" />
+                </linearGradient>
+                <filter id="bottomPocketShadow" x="-10%" y="-10%" width="120%" height="120%">
+                  <feDropShadow dx="0" dy="-4" stdDeviation="6" floodColor="#0C0106" floodOpacity="0.75" />
+                </filter>
+              </defs>
+
+              {/* Left Side Fold */}
+              <path d="M 0 0 L 0 440 L 160 220 Z" fill="url(#pocketLeftGrad)" />
+              <line x1="0" y1="440" x2="160" y2="220" stroke="url(#goldBevelGrad)" strokeWidth="1" />
+
+              {/* Right Side Fold */}
+              <path d="M 320 0 L 320 440 L 160 220 Z" fill="url(#pocketRightGrad)" />
+              <line x1="320" y1="440" x2="160" y2="220" stroke="url(#goldBevelGrad)" strokeWidth="1" />
+
+              {/* Bottom Triangle Fold */}
+              <g filter="url(#bottomPocketShadow)">
+                <path d="M 0 440 L 320 440 L 160 216 Z" fill="url(#pocketBottomGrad)" />
+                <line x1="0" y1="440" x2="160" y2="216" stroke="url(#goldBevelGrad)" strokeWidth="1.3" />
+                <line x1="320" y1="440" x2="160" y2="216" stroke="url(#goldBevelGrad)" strokeWidth="1.3" />
+              </g>
+            </svg>
+
+            {/* Elegant Botanical Golden Vines on Left & Right Folds */}
+            <img
+              src="/images/envelope_floral_left.svg"
+              alt=""
+              className="envelope-floral-vine floral-left"
+            />
+            <img
+              src="/images/envelope_floral_right.svg"
+              alt=""
+              className="envelope-floral-vine floral-right"
+            />
+          </div>
+
+          {/* Layer 4: 3D Top Flap (Points down when closed, flips 180° up on tap) */}
+          <div className={`envelope-top-flap ${isOpened ? 'flap-opened' : ''}`}>
+            <svg viewBox="0 0 320 220" className="flap-svg" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="topFlapVelvetGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+                  <stop offset="0%" stopColor="#681B3C" />
+                  <stop offset="45%" stopColor="#4A1028" />
+                  <stop offset="100%" stopColor="#300719" />
+                </linearGradient>
+                <linearGradient id="topFlapBevel" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#FFFDF0" stopOpacity="0.95" />
+                  <stop offset="50%" stopColor="#D4AF62" stopOpacity="0.85" />
+                  <stop offset="100%" stopColor="#8A6B2D" stopOpacity="0.4" />
+                </linearGradient>
+                <filter id="topFlapDropShadow" x="-10%" y="-10%" width="120%" height="130%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#0A0105" floodOpacity="0.8" />
+                </filter>
+              </defs>
+              <g filter="url(#topFlapDropShadow)">
+                <path d="M 0 0 L 320 0 L 160 220 Z" fill="url(#topFlapVelvetGrad)" />
+                <line x1="0" y1="0" x2="160" y2="220" stroke="url(#topFlapBevel)" strokeWidth="1.4" />
+                <line x1="320" y1="0" x2="160" y2="220" stroke="url(#topFlapBevel)" strokeWidth="1.4" />
+                <path
+                  d="M 16 8 L 160 206 L 304 8"
+                  stroke="#D4AF62"
+                  strokeWidth="0.8"
+                  strokeOpacity="0.45"
+                  fill="none"
+                />
+                <circle cx="160" cy="220" r="2.5" fill="#FFFDF0" />
+              </g>
+            </svg>
+          </div>
+
+          {/* Layer 5: Royal Wax Seal Medallion (Breaks and dissolves on tap) */}
+          <div className={`envelope-wax-seal-anchor ${isOpened ? 'seal-break' : ''}`}>
+            <div className="seal-glow-halo"></div>
+            <div className="seal-medallion-badge">
               <img
                 src="/images/ks_wax_seal.png"
-                alt="Kevin &amp; Sahana Official Wax Seal"
-                className="seal-image-asset"
+                alt="Kevin &amp; Sahana Royal Wax Seal"
+                className="wax-seal-img"
               />
             </div>
           </div>
         </div>
 
-        {/* Action Prompt */}
-        <div className={`envelope-footer text-center ${animationStage !== 'initial' ? 'fade-away' : ''}`}>
-          <div className="tap-to-open-badge">
-            <span className="pulsing-gold-dot"></span>
-            <span className="badge-text">TAP TO OPEN</span>
-            <Sparkles size={14} className="badge-sparkle-icon" />
-          </div>
-          <p className="touch-sub-hint">Experience Kevin &amp; Sahana&rsquo;s Wedding Invitation</p>
+        {/* Footer Tap Action Pill - Explicit Button */}
+        <div className={`envelope-hero-footer text-center ${isOpened ? 'fade-away' : ''}`}>
+          <button
+            type="button"
+            className="luxury-tap-pill"
+            onClick={handleOpenEnvelope}
+            aria-label="Open invitation envelope"
+          >
+            <span className="gold-glow-dot"></span>
+            <span className="tap-pill-text">TAP TO OPEN</span>
+            <Sparkles size={14} className="tap-pill-sparkle" />
+          </button>
+          <p className="tap-hint-caption">Experience Kevin &amp; Sahana&rsquo;s Wedding Invitation</p>
         </div>
       </div>
     </div>

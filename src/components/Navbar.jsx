@@ -20,9 +20,8 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Invitation', href: '#cover' },
     { name: 'Blessings', href: '#verse' },
-    { name: 'Family', href: '#family' },
     { name: 'Countdown', href: '#countdown' },
-    { name: 'Timeline', href: '#timeline' },
+    { name: 'Events', href: '#events' },
     { name: 'Venue & Map', href: '#venue' },
     { name: 'Dress Code', href: '#dress-code' },
     { name: 'With Love', href: '#thank-you' }
