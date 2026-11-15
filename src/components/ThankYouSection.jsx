@@ -14,14 +14,13 @@ const ThankYouSection = () => {
               <GoldCorner className="corner-bl" style={{ transform: 'rotate(270deg)' }} />
               <GoldCorner className="corner-br" style={{ transform: 'rotate(180deg)' }} />
 
-              {/* Compact KS Monogram */}
-              <div className="closing-monogram-glow mx-auto mb-2">
+              {/* Medium Elegant KS Monogram */}
+              <div className="closing-monogram-glow mx-auto mb-3">
                 <div className="monogram-official-logo-wrap">
                   <img
                     src="/images/ks_logo_circle.png"
                     alt="Kevin &amp; Sahana Official Wedding Logo"
                     className="monogram-official-logo-img"
-                    style={{ width: '56px', height: '56px' }}
                   />
                 </div>
               </div>
@@ -36,7 +35,7 @@ const ThankYouSection = () => {
 
               <div className="golden-hairline mx-auto mb-2"></div>
 
-              <div className="closing-couple-names gold-shimmer-text my-2" style={{ fontSize: '2rem' }}>
+              <div className="closing-couple-names gold-shimmer-text my-2 my-md-3">
                 Kevin &amp; Sahana
               </div>
 

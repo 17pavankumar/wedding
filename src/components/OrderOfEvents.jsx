@@ -9,7 +9,7 @@ const OrderOfEvents = () => {
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10 col-xl-9">
             {/* Single Compact Luxury Wine Event Card */}
-            <div className="events-unified-card p-4 p-md-5 text-center position-relative">
+            <div className="events-unified-card order-of-events-card p-4 p-md-5 text-center position-relative">
               {/* Ornate Gold Corners */}
               <GoldCorner className="corner-tl" />
               <GoldCorner className="corner-tr" style={{ transform: 'rotate(90deg)' }} />

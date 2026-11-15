@@ -123,6 +123,7 @@ body {
 .family-card,
 .countdown-card,
 .order-of-events-card,
+.events-unified-card,
 .venue-card,
 .dress-code-card-main,
 .final-closing-card,
@@ -148,6 +149,7 @@ body {
   .family-card,
   .countdown-card,
   .order-of-events-card,
+  .events-unified-card,
   .venue-card,
   .dress-code-card-main,
   .final-closing-card,
@@ -258,6 +260,13 @@ body {
   padding: 12px;
   user-select: none;
   -webkit-user-select: none;
+  transition: opacity 0.75s ease-out;
+  will-change: opacity;
+}
+
+.luxury-envelope-overlay.stage-revealing {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .golden-bloom-screen {
@@ -267,7 +276,7 @@ body {
   opacity: 0;
   pointer-events: none;
   z-index: 10050;
-  transition: opacity 0.55s ease-in-out;
+  transition: opacity 1.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .golden-bloom-screen.bloom-active {
@@ -1207,13 +1216,7 @@ body {
    SECTION 06: WEDDING & RECEPTION EVENTS (SINGLE ELEGANT WINE CARD)
    ========================================================================== */
 .events-unified-card {
-  background: linear-gradient(155deg, #4A1028 0%, #30081A 60%, #1A030E 100%);
-  border: 1px solid rgba(212, 175, 98, 0.45);
-  border-radius: 12px;
-  box-shadow: 
-    0 24px 50px rgba(50, 10, 28, 0.35),
-    0 8px 24px rgba(0, 0, 0, 0.35),
-    inset 0 0 35px rgba(0, 0, 0, 0.65);
+  /* Inherits uniform luxury wine card styling (width: 100%, max-width: 820px, border-radius: 18px) */
 }
 
 .events-icon-badge {
@@ -1446,8 +1449,8 @@ body {
    SECTION 09: FINAL THANK YOU (AT LAST)
    ========================================================================== */
 .closing-monogram-glow {
-  width: 90px;
-  height: 90px;
+  width: 76px;
+  height: 76px;
   position: relative;
   display: flex;
   align-items: center;
@@ -1456,8 +1459,8 @@ body {
 
 @media (min-width: 768px) {
   .closing-monogram-glow {
-    width: 110px;
-    height: 110px;
+    width: 86px;
+    height: 86px;
   }
 }
 
@@ -1470,11 +1473,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1.5px solid rgba(212, 175, 98, 0.65);
   box-shadow: 
-    0 0 0 1.5px rgba(212, 175, 98, 0.6),
-    0 0 0 3px rgba(74, 16, 40, 0.85),
-    0 0 0 4.5px rgba(212, 175, 98, 0.3),
-    0 0 25px rgba(212, 175, 98, 0.45);
+    0 0 0 2.5px rgba(74, 16, 40, 0.85),
+    0 0 0 4px rgba(212, 175, 98, 0.35),
+    0 0 18px rgba(212, 175, 98, 0.35);
   animation: elegantCrestGlow 4s ease-in-out infinite alternate;
 }
 
@@ -1516,8 +1519,9 @@ body {
 
 .closing-couple-names {
   font-family: var(--font-calligraphy);
-  font-size: 3.5rem;
+  font-size: 3.2rem;
   line-height: 1.2;
+  text-shadow: 0 0 25px rgba(212, 175, 98, 0.45);
 }
 
 @media (min-width: 768px) {

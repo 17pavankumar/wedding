@@ -70,21 +70,26 @@ const EnvelopeOpening = ({ onOpenComplete }) => {
     // Step 1: Flap swings 180° open in 3D (0.0s -> 0.55s)
     setStage('unfolding');
 
-    // Step 2: Card smoothly glides UP out of the envelope pocket (0.55s -> 1.9s)
+    // Step 2: Card smoothly glides UP out of the envelope pocket (0.55s -> 1.8s)
     setTimeout(() => {
       setStage('emerging');
     }, 550);
 
-    // Step 3: Luminous golden bloom transition (2.1s -> 2.65s)
+    // Step 3: Ethereal golden light emerges and blooms slowly for 1.7s (1.8s -> 3.5s)
     setTimeout(() => {
       setStage('blooming');
-    }, 2100);
+    }, 1800);
 
-    // Step 4: Seamless transition into website
+    // Step 4: Golden light softly dissolves to reveal the invitation (3.5s -> 4.25s)
+    setTimeout(() => {
+      setStage('revealing');
+    }, 3500);
+
+    // Step 5: Seamless transition into website
     setTimeout(() => {
       setStage('completed');
       if (onOpenComplete) onOpenComplete();
-    }, 2750);
+    }, 4250);
   };
 
   if (stage === 'completed') {
@@ -92,7 +97,7 @@ const EnvelopeOpening = ({ onOpenComplete }) => {
   }
 
   const isOpened = stage !== 'initial';
-  const isCardEmerged = stage === 'emerging' || stage === 'blooming';
+  const isCardEmerged = stage === 'emerging' || stage === 'blooming' || stage === 'revealing';
 
   return (
     <div
@@ -112,7 +117,7 @@ const EnvelopeOpening = ({ onOpenComplete }) => {
       <div className="envelope-ambient-halo"></div>
 
       {/* Luminous Golden Bloom Screen for Seamless Crossfade */}
-      <div className={`golden-bloom-screen ${stage === 'blooming' ? 'bloom-active' : ''}`}></div>
+      <div className={`golden-bloom-screen ${(stage === 'blooming' || stage === 'revealing') ? 'bloom-active' : ''}`}></div>
 
       <div className="envelope-scene-wrapper" ref={containerRef}>
         {/* Header Invitation Tagline */}
