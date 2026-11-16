@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-const EnvelopeOpening = ({ onOpenComplete }) => {
-  // Stages: 'initial' | 'unfolding' | 'emerging' | 'blooming' | 'completed'
+const EnvelopeOpening = ({ onStartReveal, onOpenComplete }) => {
+  // Stages: 'initial' | 'unfolding' | 'emerging' | 'blooming' | 'revealing' | 'completed'
   const [stage, setStage] = useState('initial');
   const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
   const containerRef = useRef(null);
@@ -80,9 +80,29 @@ const EnvelopeOpening = ({ onOpenComplete }) => {
       setStage('blooming');
     }, 1800);
 
-    // Step 4: Golden light softly dissolves to reveal the invitation (3.5s -> 4.25s)
+    // Step 4: Golden light softly dissolves + Golden Stardust Cascade (Feature #3)
     setTimeout(() => {
       setStage('revealing');
+      if (onStartReveal) onStartReveal();
+
+      // Feature #3: Ethereal shower of micro golden stardust drifting gently across the reveal
+      try {
+        confetti({
+          particleCount: 45,
+          angle: 90,
+          spread: 120,
+          origin: { y: -0.05, x: 0.5 },
+          colors: ['#FFE5A3', '#D4AF62', '#FFFDF0', '#F3E5AB', '#E8C574'],
+          ticks: 240,
+          gravity: 0.38,
+          scalar: 0.55,
+          drift: 0.08,
+          shapes: ['circle'],
+          disableForReducedMotion: true
+        });
+      } catch (err) {
+        // Graceful fallback
+      }
     }, 3500);
 
     // Step 5: Seamless transition into website
@@ -141,6 +161,15 @@ const EnvelopeOpening = ({ onOpenComplete }) => {
           {/* Layer 1: Envelope Interior Back Plate */}
           <div className="envelope-back-plate">
             <div className="envelope-back-pattern"></div>
+          </div>
+
+          {/* Layer 1.5: Divine Rays & Behind-Card Golden Aura (Feature #1) */}
+          <div className={`envelope-behind-rays ${isCardEmerged ? 'rays-active' : ''} ${stage === 'blooming' || stage === 'revealing' ? 'rays-blooming' : ''}`}>
+            <div className="card-behind-glow-core"></div>
+            <div className="ray-beam ray-beam-1"></div>
+            <div className="ray-beam ray-beam-2"></div>
+            <div className="ray-beam ray-beam-3"></div>
+            <div className="ray-beam ray-beam-4"></div>
           </div>
 
           {/* Layer 2: The Luxury Invitation Card (Slides UP Out of Pocket) */}
@@ -289,7 +318,6 @@ const EnvelopeOpening = ({ onOpenComplete }) => {
             <span className="tap-pill-text">TAP TO OPEN</span>
             <Sparkles size={14} className="tap-pill-sparkle" />
           </button>
-          <p className="tap-hint-caption">Experience Kevin &amp; Sahana&rsquo;s Wedding Invitation</p>
         </div>
       </div>
     </div>

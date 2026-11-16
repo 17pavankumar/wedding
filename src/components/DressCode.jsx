@@ -4,7 +4,7 @@ import { GoldCorner } from './GoldDecorations';
 
 const DressCode = () => {
   return (
-    <section id="dress-code" className="dress-code-section py-3 py-md-4 position-relative">
+    <section id="dress-code" className="dress-code-section py-2 py-md-3 position-relative">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10 col-xl-9">
@@ -27,15 +27,22 @@ const DressCode = () => {
               </p>
 
               {/* Main Heading: Wine Colour Theme */}
-              <h2 className="dress-title-minimal text-gold-champagne mb-3">
+              <h2 className="dress-title-minimal text-gold-champagne mb-2">
                 Wine Colour Theme
               </h2>
+
+              {/* Clarification: For Wedding Only */}
+              <div className="mb-3">
+                <span className="dress-occasion-tag text-uppercase fw-semibold">
+                  Wedding Only
+                </span>
+              </div>
 
               <div className="golden-hairline mx-auto mb-3"></div>
 
               {/* Description */}
               <p className="dress-subtitle-minimal text-ivory mb-0">
-                We encourage our guests to embrace the wine colour palette for the celebration.
+                We encourage our guests to embrace the wine colour palette for the wedding ceremony only.
               </p>
             </div>
           </div>

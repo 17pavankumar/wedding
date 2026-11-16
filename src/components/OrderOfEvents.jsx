@@ -4,7 +4,7 @@ import { GoldCorner } from './GoldDecorations';
 
 const OrderOfEvents = () => {
   return (
-    <section id="events" className="events-section py-3 py-md-4 position-relative">
+    <section id="events" className="events-section py-2 py-md-3 position-relative">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10 col-xl-9">

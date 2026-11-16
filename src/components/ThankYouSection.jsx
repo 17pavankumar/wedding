@@ -3,7 +3,7 @@ import { GoldCorner } from './GoldDecorations';
 
 const ThankYouSection = () => {
   return (
-    <section id="thank-you" className="thank-you-section py-3 py-md-4 position-relative text-center">
+    <section id="thank-you" className="thank-you-section py-2 py-md-3 position-relative text-center">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10 col-xl-9">

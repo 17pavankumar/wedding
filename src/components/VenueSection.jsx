@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Navigation, Copy, Check, ExternalLink, Church, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { MapPin, Navigation, Copy, Check, ExternalLink } from 'lucide-react';
 import { GoldCorner, FloralDivider } from './GoldDecorations';
 
 const VenueSection = () => {
@@ -20,7 +20,7 @@ const VenueSection = () => {
   };
 
   return (
-    <section id="venue" className="venue-section py-3 py-md-4 position-relative">
+    <section id="venue" className="venue-section py-2 py-md-3 position-relative">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10 col-xl-9">
@@ -35,7 +35,7 @@ const VenueSection = () => {
               {/* Compact Header */}
               <div className="text-center mb-3">
                 <p className="timeline-eyebrow text-gold-soft text-uppercase tracking-wider mb-1 small">
-                  LOCATION &amp; SCHEDULE
+                  LOCATION &amp; DIRECTIONS
                 </p>
                 <h2 className="timeline-script-title gold-shimmer-text mb-1">
                   Celebrate at Eden Farms
@@ -96,29 +96,6 @@ const VenueSection = () => {
                   <p className="venue-address-display text-ivory mb-3 small leading-normal">
                     Dasanayakanahalli, Hennur-Bagalur Road, Bangalore.
                   </p>
-
-                  {/* Compact Schedule Chips */}
-                  <div className="venue-timings-grid d-flex flex-column flex-sm-row gap-2 mb-3">
-                    <div className="timing-chip-compact flex-grow-1 p-2">
-                      <div className="d-flex align-items-center gap-2">
-                        <Church size={15} className="text-gold-champagne flex-shrink-0" />
-                        <div className="text-start">
-                          <span className="text-gold-champagne fw-semibold small d-block">CEREMONY</span>
-                          <span className="text-ivory small">4:00 PM</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="timing-chip-compact flex-grow-1 p-2">
-                      <div className="d-flex align-items-center gap-2">
-                        <Sparkles size={15} className="text-gold-champagne flex-shrink-0" />
-                        <div className="text-start">
-                          <span className="text-gold-champagne fw-semibold small d-block">RECEPTION</span>
-                          <span className="text-ivory small">7:00 PM</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Action Buttons */}
                   <div className="venue-actions d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">

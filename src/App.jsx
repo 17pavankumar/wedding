@@ -13,6 +13,7 @@ import { ArrowUp } from 'lucide-react';
 
 function App() {
   const [envelopeOpened, setEnvelopeOpened] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Prevent unwanted URL hash jumping on page load and lock scroll restoration
@@ -26,8 +27,13 @@ function App() {
     window.scrollTo(0, 0);
   }, []);
 
+  const handleStartReveal = () => {
+    setIsRevealed(true);
+  };
+
   const handleEnvelopeComplete = () => {
     setEnvelopeOpened(true);
+    setIsRevealed(true);
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
@@ -55,6 +61,7 @@ function App() {
       {/* Section 01: Full-Screen 3D Animated Luxury Envelope */}
       {!envelopeOpened && (
         <EnvelopeOpening
+          onStartReveal={handleStartReveal}
           onOpenComplete={handleEnvelopeComplete}
         />
       )}
@@ -65,24 +72,24 @@ function App() {
         <Navbar />
 
         {/* Section 02: Main Wedding Invitation Cover */}
-        <HeroCover />
+        <HeroCover isRevealed={isRevealed} />
 
         {/* Section 03: Bible Verse & Welcome Message */}
         <BibleVerse />
 
-        {/* Section 04: Wedding Countdown & Calendar */}
-        <Countdown />
-
-        {/* Section 06: Order of Events / Wedding Day Timeline */}
+        {/* Section 04: Order of Events / Celebration Schedule */}
         <OrderOfEvents />
 
-        {/* Section 07: Venue & Google Maps (With Replaced Eden Farms Photo) */}
+        {/* Section 05: Venue & Google Maps */}
         <VenueSection />
 
-        {/* Section 08: Luxury Dress Code (Wardrobe Planner styled after reference) */}
+        {/* Section 06: Wedding Countdown & Calendar */}
+        <Countdown />
+
+        {/* Section 07: Luxury Dress Code */}
         <DressCode />
 
-        {/* Section 09: Final Thank You Section with Official Logo (At last) */}
+        {/* Section 08: Final Thank You Section */}
         <ThankYouSection />
 
         {/* Footer */}

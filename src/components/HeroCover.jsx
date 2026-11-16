@@ -2,14 +2,14 @@ import React from 'react';
 import { GoldCorner, FloralDivider } from './GoldDecorations';
 import { ChevronDown, MapPin } from 'lucide-react';
 
-const HeroCover = () => {
+const HeroCover = ({ isRevealed = false }) => {
   return (
-    <section id="cover" className="hero-cover-section d-flex align-items-center justify-content-center position-relative py-3 py-md-4">
+    <section id="cover" className="hero-cover-section d-flex align-items-center justify-content-center position-relative py-2 py-md-3">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10 col-xl-9">
             {/* Luxury Invitation Card Frame with Uniform Width */}
-            <div className="invitation-card-frame position-relative text-center p-3 p-sm-4">
+            <div className={`invitation-card-frame position-relative text-center p-3 p-sm-4 ${isRevealed ? 'hero-revealed-enter' : ''}`}>
               {/* Ornate Gold Corners */}
               <GoldCorner className="corner-tl" />
               <GoldCorner className="corner-tr" style={{ transform: 'rotate(90deg)' }} />
@@ -18,6 +18,9 @@ const HeroCover = () => {
 
               {/* Inner Double Gold Border */}
               <div className="inner-gold-border"></div>
+
+              {/* Feature #3: Micro Stardust Dissolve Ambient Halo */}
+              {isRevealed && <div className="hero-stardust-dissolve-glow" aria-hidden="true"></div>}
 
               {/* Official KS Monogram Crest */}
               <div className="official-logo-crest-badge mx-auto mb-2">
@@ -42,7 +45,7 @@ const HeroCover = () => {
               <FloralDivider className="my-2" />
 
               {/* Couple's Names in Large Gold Calligraphy with Shimmer */}
-              <div className="couple-names-wrapper my-2 my-md-3">
+              <div className={`couple-names-wrapper my-2 my-md-3 ${isRevealed ? 'reveal-sheen' : ''}`}>
                 <h1 className="couple-names-calligraphy gold-shimmer-text mb-0">
                   <span className="groom-name">Kevin</span>
                   <span className="ampersand">&amp;</span>
